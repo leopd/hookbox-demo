@@ -2,19 +2,24 @@ import cherrypy
 import json  # requires relatively new python, otherwise simple_json
 
 
-def json_response(data):
-    """Returns the data as json
-    """
-    return json.dumps(data)
 
-
-class RespondTrue(object):
+class JsonResponse(object):
     """Basic response to many Hookbox callbacks.
     """
+    def __init__(self,data):
+        self.data = data
+
     def index(self):
-        return json_response([ True, {} ])
+        return json.dumps( self.data )
     index.exposed = True
-    
+
+
+class RespondTrue(JsonResponse):
+    def __init__(self):
+        true_response = [ True, {} ]
+        super(RespondTrue,self).__init__( true_response )
+
+
 
 class RubberStamp(object):
     """Approves all hookbox authentication requests.
@@ -27,10 +32,14 @@ class RubberStamp(object):
 
     connect = RespondTrue()
     disconnect = RespondTrue()
-    create_channel = RespondTrue()
     subscribe = RespondTrue()
     unsubscribe = RespondTrue()
     publish = RespondTrue()
+
+    channel_config = [ True, { "history_size" : 0, 
+                               "reflective" : True, 
+                               "presenceful" : True } ]
+    create_channel = JsonResponse( channel_config )
 
 
 cherrypy.quickstart(RubberStamp())
