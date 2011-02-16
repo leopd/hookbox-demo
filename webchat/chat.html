@@ -3,6 +3,7 @@
   <title>Simple web chat with Hookbox
   </title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <script src="http://localhost:8001/static/hookbox.js"></script>
   <style>
     body {
         font-face: arial, sans-serif;
@@ -27,18 +28,50 @@
 
     <div class="conversation">
         <div id="convolog">
-          <i>Conversation goes here.</i>
+          <i>The conversation begins...</i>
         </div>
         <input type="text" id="typebox">
     </div>
 
     <script>
+        var hookbox_conn;  // global
+        
+        function html_encode(txt) {
+            return $("<div>").text(txt).html();
+        }
+        function show_chat_message(msg) {
+            var name = html_encode(msg.user);
+            var text = html_encode(msg.payload);
+            $("#convolog").append("<br><i>"+name+":</i> "+text);
+        }
+        function push_to_channel(msg) {
+            hookbox_conn.publish("chat",msg);
+        }
+
         $(function() {
+            // Runs when page is initialized.
+
+            // Sets up UI.
             $("#typebox").change(function() {
+                // When user hits enter in the text box...
                 var msg = $(this).val();
-                msg = escape(msg); //TODO: HTML-escape, not URL-escape
-                $("#convolog").append("<br>"+msg);
+                push_to_channel(msg);
             });
+
+            // Setup hookbox connection.
+            hookbox_conn = hookbox.connect("http://localhost:8001/");
+            hookbox_conn.onError = function(err) { alert("Failed to connect to hookbox server: " + err.msg); };
+
+            hookbox_conn.onSubscribed = function(channel, _sub) {
+                if( channel == 'chat' ) {
+                    _sub.onPublish=function(msg) {
+                        show_chat_message(msg);
+                    }
+                }
+            }
+            hookbox_conn.subscribe("chat");
+
+
         });
     </script>
 </body>

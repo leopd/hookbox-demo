@@ -6,9 +6,10 @@ class JsonResponse(object):
     def __init__(self,data):
         self.data = data
 
-    def index(self):
+    def index(self, *args, **kwargs):
         return json.dumps( self.data )
     index.exposed = True
+
 
 
 class RubberStamp(object):
@@ -16,13 +17,22 @@ class RubberStamp(object):
     The most simple way to get hookbox working.
     """
 
+    def __init__(self):
+        self.user_number = 0
+
+    _cp_config = {'tools.trailing_slash.on': False}
     def index(self):
-        return "Rubber stamp for hookbox auth"
+        return "yes"
     index.exposed = True
 
-    true_response = [ True, {} ]
 
-    connect = JsonResponse( true_response )
+    def connect(self, *args, **kwargs):
+        self.user_number += 1
+        name = "User %d" % self.user_number
+        return json.dumps( [True, {"name":name}] )
+    connect.exposed = True
+
+    true_response = [ True, {} ]
     disconnect = JsonResponse( true_response )
     subscribe = JsonResponse( true_response )
     unsubscribe = JsonResponse( true_response )
@@ -34,6 +44,10 @@ class RubberStamp(object):
                                "presenceful" : True } ]
     create_channel = JsonResponse( channel_attrib )
 
+class Root(object):
+    hookbox = RubberStamp()
+    hookbox.exposed = True
 
-cherrypy.quickstart(RubberStamp())
+
+cherrypy.quickstart(Root())
 
