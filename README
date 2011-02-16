@@ -3,5 +3,9 @@ real-time web development with python:
 
 http://www.embracingchaos.com/2011/02/real-time-web-with-hookbox.html
 
+The code included demonstrates a trivial web chat application.
+It is written using hookbox for a COMET server, 
+JQuery for web UI,
+and CherryPy for the supportnig web application.
 
 
