@@ -1,0 +1,49 @@
+<html>
+<head>
+  <title>Simple web chat with Hookbox
+  </title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <style>
+    body {
+        font-face: arial, sans-serif;
+        background: #eee;
+    }
+
+    .conversation {
+        background: #ff7;
+        margin: 30px;
+        padding: 15px;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 0 0 10px #333;
+        -moz-box-shadow: 0 0 10px #333;
+        box-shadow: 0 0 10px #333;
+    }
+    
+  </style>
+</head>
+<body>
+
+    <div class="conversation">
+        <div id="convolog">
+          <i>Conversation goes here.</i>
+        </div>
+        <input type="text" id="typebox">
+    </div>
+
+    <script>
+        $(function() {
+            $("#typebox").change(function() {
+                var msg = $(this).val();
+                msg = escape(msg); //TODO: HTML-escape, not URL-escape
+                $("#convolog").append("<br>"+msg);
+            });
+        });
+    </script>
+</body>
+
+</html>
+
+
+
