@@ -8,4 +8,21 @@ It is written using hookbox for a COMET server,
 JQuery for web UI,
 and CherryPy for the supportnig web application.
 
+To use the web chat, make sure you have cherrypy and hookbox:
+    sudo easy_install cherrypy
+    sudo easy_install hookbox
+
+Then start the rubber_stamp app:
+    python ows/rubber_stamp.py &
+
+Now start hookbox;
+    hookbox --cbport=8080 -a adminpassword &
+
+You can Watch hookbox from
+    http://localhost:8001/admin/
+
+Now open the chat.html file in two browsers and watch them talk:
+    open webchat/chat.html
+    open webchat/chat.html
+
 
